@@ -81,11 +81,18 @@ public class Wallpaper {
 	    //popupmenu
 	    PopupMenu trayPopupMenu = new PopupMenu();
 
+	    //2nd menuitem of popupmenu
+	    MenuItem next = new MenuItem("Random");
+	    next.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            pictures();
+	        }
+	    });
+	    trayPopupMenu.add(next);
 	    //1t menuitem for popupmenu
 	    MenuItem action = new MenuItem("Speed");
 	    action.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	JTextField textArea = new JTextField(Integer.toString(x));
 	        	JComboBox comboOptions = new JComboBox( comboStrings );
 	        	comboOptions.setSelectedIndex( selectedOption );
 
