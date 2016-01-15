@@ -33,6 +33,8 @@ public class Wallpaper {
 	private static int selectedOption = 0;
 	private static java.net.URL logoOneurl = Wallpaper.class.getResource("images/bulb.gif");
 	private static boolean sleep = false;
+    //private static File folder = new File("C:/Users/Public/Pictures/Sample Pictures");
+	private static File folder = new File("M:/wallpaper");
 
   public static interface User32 extends Library {
     User32 INSTANCE = (User32) Native.loadLibrary("user32",User32.class,W32APIOptions.DEFAULT_OPTIONS);
@@ -41,16 +43,15 @@ public class Wallpaper {
 
   public static void pictures() {
 	Date dt = new Date();
-	
+
 	sleep = false;
-	  
+
 	@SuppressWarnings("deprecation")
 	int minute = dt.getMinutes();
-	
+
 	lastChangedMinute = minute;
- 
+
     ArrayList<String> list = new ArrayList<String>();
-    File folder = new File("M:/wallpaper");
 
     File[] listOfFiles = folder.listFiles();
 
@@ -77,11 +78,11 @@ public class Wallpaper {
 	        System.out.println("System tray is not supported !!! ");
 	        return ;
 	    }
-	    
+
 	    SystemTray systemTray = SystemTray.getSystemTray();
 	    Image image = Toolkit.getDefaultToolkit().getImage(logoOneurl);
 
-	    
+
 
 	    //popupmenu
 	    PopupMenu trayPopupMenu = new PopupMenu();
@@ -103,11 +104,11 @@ public class Wallpaper {
 
 	        	JOptionPane.showConfirmDialog(null, comboOptions, "Enter switch rate (in minutes)", JOptionPane.OK_CANCEL_OPTION);
 	            selectedOption = comboOptions.getSelectedIndex();
-	            
+
 	        }
-	    });     
+	    });
 	    trayPopupMenu.add(action);
-	    
+
 	    MenuItem pause = new MenuItem("pause");
 	    pause.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
@@ -127,9 +128,9 @@ public class Wallpaper {
 
 	    //setting tray icon
 	    TrayIcon trayIcon = new TrayIcon(image, "Changer", trayPopupMenu);
-	    //adjust to default size as per system recommendation 
+	    //adjust to default size as per system recommendation
 	    trayIcon.setImageAutoSize(true);
-	    
+
 	    trayIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -148,18 +149,18 @@ public class Wallpaper {
 	    System.out.println("end of main");
 
   }
-  
+
   public static boolean checkTime() {
-	  
+
 	  Date dt = new Date();
-	  
+
 	  @SuppressWarnings("deprecation")
 	  int minutes = dt.getMinutes();
-	  
+
 	  String selected = comboStrings[selectedOption];
-	  
+
 	  int selectedInt = 0;
-	  
+
 	  switch( selected ) {
 	  	case "Every minute":
 	  		selectedInt = 1;
@@ -173,10 +174,10 @@ public class Wallpaper {
 	  		return minutes != lastChangedMinute && ( minutes % selectedInt ) == 0;
 	  }
   }
-  
+
   public static void run() {
 	  pictures();
-	  	
+
 	    while( b ) {
 
 	      try {
