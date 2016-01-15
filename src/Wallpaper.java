@@ -7,6 +7,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +17,6 @@ import java.util.Random;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -31,6 +32,7 @@ public class Wallpaper {
 	private static String[] comboStrings = { "Every minute", "5 minutes", "10 minutes", "15 minutes", "30 minutes", "hour" };
 	private static int selectedOption = 0;
 	private static java.net.URL logoOneurl = Wallpaper.class.getResource("images/bulb.gif");
+	private static boolean sleep = false;
 
   public static interface User32 extends Library {
     User32 INSTANCE = (User32) Native.loadLibrary("user32",User32.class,W32APIOptions.DEFAULT_OPTIONS);
@@ -39,6 +41,8 @@ public class Wallpaper {
 
   public static void pictures() {
 	Date dt = new Date();
+	
+	sleep = false;
 	  
 	@SuppressWarnings("deprecation")
 	int minute = dt.getMinutes();
@@ -77,6 +81,8 @@ public class Wallpaper {
 	    SystemTray systemTray = SystemTray.getSystemTray();
 	    Image image = Toolkit.getDefaultToolkit().getImage(logoOneurl);
 
+	    
+
 	    //popupmenu
 	    PopupMenu trayPopupMenu = new PopupMenu();
 
@@ -89,7 +95,7 @@ public class Wallpaper {
 	    });
 	    trayPopupMenu.add(next);
 	    //1t menuitem for popupmenu
-	    MenuItem action = new MenuItem("Speed");
+	    MenuItem action = new MenuItem("Settings");
 	    action.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	        	JComboBox comboOptions = new JComboBox( comboStrings );
@@ -101,6 +107,14 @@ public class Wallpaper {
 	        }
 	    });     
 	    trayPopupMenu.add(action);
+	    
+	    MenuItem pause = new MenuItem("pause");
+	    pause.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            sleep = !sleep;
+	        }
+	    });
+	    trayPopupMenu.add(pause);
 
 	    //2nd menuitem of popupmenu
 	    MenuItem close = new MenuItem("Close");
@@ -115,6 +129,15 @@ public class Wallpaper {
 	    TrayIcon trayIcon = new TrayIcon(image, "Changer", trayPopupMenu);
 	    //adjust to default size as per system recommendation 
 	    trayIcon.setImageAutoSize(true);
+	    
+	    trayIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                	pictures();
+                }
+            }
+        });
 
 	    try{
 	        systemTray.add(trayIcon);
@@ -158,7 +181,7 @@ public class Wallpaper {
 
 	      try {
         	Thread.sleep(1000);
-        	if( checkTime() ) {
+        	if( checkTime() && !sleep ) {
         		pictures();
         	}
 
