@@ -31,6 +31,7 @@ public class Wallpaper {
 	private static String[] comboStrings = { "Every minute", "5 minutes", "10 minutes", "15 minutes", "30 minutes", "hour" };
 	private static int selectedOption = 0;
 	private static java.net.URL logoOneurl = Wallpaper.class.getResource("images/bulb.gif");
+	private static File folder = new File("C:/Users/Public/Pictures/Sample Pictures");
 
   public static interface User32 extends Library {
     User32 INSTANCE = (User32) Native.loadLibrary("user32",User32.class,W32APIOptions.DEFAULT_OPTIONS);
@@ -46,7 +47,7 @@ public class Wallpaper {
 	lastChangedMinute = minute;
  
     ArrayList<String> list = new ArrayList<String>();
-    File folder = new File("M:/wallpaper");
+//    File folder = new File("M:/wallpaper");
 
     File[] listOfFiles = folder.listFiles();
 
