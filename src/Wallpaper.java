@@ -1,4 +1,3 @@
-
 import java.awt.AWTException;
 import java.awt.Image;
 import java.awt.MenuItem;
@@ -47,7 +46,7 @@ public class Wallpaper {
 	lastChangedMinute = minute;
  
     ArrayList<String> list = new ArrayList<String>();
-    File folder = new File("M:\\wallpaper");
+    File folder = new File(".");
 
     File[] listOfFiles = folder.listFiles();
 
