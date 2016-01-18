@@ -56,7 +56,7 @@ public class Wallpaper {
     File[] listOfFiles = folder.listFiles();
 
     for( int i = 0; i < listOfFiles.length; i++ ) {
-      if( listOfFiles[i].toString().contains(".jpg") ) {
+      if( listOfFiles[i].toString().contains(".jpg") || listOfFiles[i].toString().contains(".png") ) {
         list.add( listOfFiles[i].toString() );
       }
     }
