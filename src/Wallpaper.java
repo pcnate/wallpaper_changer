@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JComboBox;
@@ -21,9 +23,8 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-//import com.sun.jna.platform.win32.WinDef.HWND;
-//import com.sun.jna.platform.win32.WinDef.PVOID;
-import com.sun.jna.win32.W32APIOptions;
+import com.sun.jna.win32.W32APIFunctionMapper;
+import com.sun.jna.win32.W32APITypeMapper;
 
 /**
  * Class for changing wallpaper on a timer with a system tray icon, context menu and settings dialog.
@@ -54,21 +55,58 @@ public class Wallpaper {
 	
 	/** default location to look for images */
     private static File defaultFolder = new File("C:/Users/Public/Pictures/Sample Pictures");
-    private static File folder = new File("C:/Users/Public/Pictures/Sample Pictures");
-	//private static File folder = new File("M:/wallpaper");
+    
+    /** list of folders to scan for images */
+    public static List<File> folders = new ArrayList<File>();
+
+    /**
+     * set the passed file as the desktop background
+     *  
+     * @param file	file to be assigned as background
+     */
+    public static void setWallpaper( String file ) {
+    	User32.INSTANCE.SystemParametersInfo(20, 0, file , 1);
+    }
 
     /**
      *
      */
     public static interface User32 extends Library {
-    	User32 INSTANCE = (User32) Native.loadLibrary("user32",User32.class,W32APIOptions.DEFAULT_OPTIONS);
-    	boolean SystemParametersInfo (int one, int two, String s ,int three);
+//    	User32 INSTANCE = (User32) Native.loadLibrary("user32",User32.class,W32APIOptions.DEFAULT_OPTIONS);
+//    	boolean SystemParametersInfo (int one, int two, String s ,int three);
+    	//from MSDN article
+        long SPI_SETDESKWALLPAPER = 20;
+        long SPIF_UPDATEINIFILE = 0x01;
+        long SPIF_SENDWININICHANGE = 0x02;
+
+        User32 INSTANCE = (User32) Native.loadLibrary("user32", User32.class, new HashMap<Object, Object>() {
+            {
+                put(OPTION_TYPE_MAPPER, W32APITypeMapper.UNICODE);
+                put(OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+            }
+        });
+
+        boolean SystemParametersInfo(
+                int uiAction,
+                int uiParam,
+                String pvParam,
+                int fWinIni
+        );
+    }
+    
+    /**
+     * reset the stored folder listing
+     */
+    public static void resetFolders() {
+    	folders.clear();
     }
   
     /**
      * scan for folders that can be used as the defaults
      */
     public static void scanFolders() {
+    	
+    	resetFolders();
     	
     	// default location
     	addFolder( defaultFolder );
@@ -119,14 +157,16 @@ public class Wallpaper {
      * @param folder	folder path
      */
     public static void addFolder( File folder ) {
-    	System.out.println( "adding folder: "+folder.toString() );
+    	folders.add( folder );
     }
 
     /**
      * randomly select a picture
      */
     public static void pictures() {
+
     	scanFolders();
+    	
     	Date dt = new Date();
 
     	sleep = false;
@@ -138,26 +178,23 @@ public class Wallpaper {
 
     	ArrayList<String> list = new ArrayList<String>();
 
-    	File[] listOfFiles = folder.listFiles();
+    	for( File folder:folders ) {
+    		
+    		File[] listOfFiles = folder.listFiles();
 
-    	for( int i = 0; i < listOfFiles.length; i++ ) {
-    		if( listOfFiles[i].toString().contains(".jpg") ) {
-    			list.add( listOfFiles[i].toString() );
-    		}
+    		for( int i = 0; i < listOfFiles.length; i++ ) {
+//	    		if( listOfFiles[i].toString().contains(".jpg") || listOfFiles[i].toString().contains(".png") ) {
+	    		if( listOfFiles[i].toString().contains(".jpg") ) {
+	    			list.add( listOfFiles[i].toString() );
+	    		}
+	    	}
+    		
     	}
 
     	Random randomizer = new Random();
     	String randomPic = list.get( randomizer.nextInt( list.size() ) );
+    	System.out.println( randomPic );
     	setWallpaper( randomPic );
-    }
-
-    /**
-     * set the passed file as the desktop background
-     *  
-     * @param file	file to be assigned as background
-     */
-    public static void setWallpaper( String file ) {
-    	User32.INSTANCE.SystemParametersInfo(0x0014, 0, file , 1);
     }
 
     /**
@@ -202,10 +239,15 @@ public class Wallpaper {
 	    });
 	    trayPopupMenu.add(action);
 
-	    MenuItem pause = new MenuItem("pause");
+	    MenuItem pause = new MenuItem("Pause");
 	    pause.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	            sleep = !sleep;
+	            if( sleep ) {
+	            	pause.setLabel("Resume");
+	            } else {
+	            	pause.setLabel("Pause");
+	            }
 	        }
 	    });
 	    trayPopupMenu.add(pause);
