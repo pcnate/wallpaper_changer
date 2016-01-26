@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
@@ -30,10 +31,12 @@ import com.sun.jna.win32.W32APITypeMapper;
  * Class for changing wallpaper on a timer with a system tray icon, context menu and settings dialog.
  * 
  * @author Nathan Baker <pcnate@gmail.com>;
- * @author Sean Russell
+ * @author Sean Russell <SeanChristopherRussell@gmail.com>
  *
  */
 public class Wallpaper {
+	/* tray icon name */
+	public static TrayIcon trayIcon;
     
     /** flag to determine if should continue the main program loop */
 	private static boolean b = true;
@@ -49,9 +52,15 @@ public class Wallpaper {
 	
 	/** */
 	private static java.net.URL logoOneurl = Wallpaper.class.getResource("images/bulb.gif");
+	private static java.net.URL logoOneurl2 = Wallpaper.class.getResource("images/");
+	private static Image image = Toolkit.getDefaultToolkit().getImage(logoOneurl);
+	private static Image image2 = Toolkit.getDefaultToolkit().getImage(logoOneurl2);
 	
 	/** pause the change timer */
 	private static boolean sleep = false;
+	
+	/** toggle tray icon image */
+	private static boolean hide = false;
 	
 	/** default location to look for images */
     private static File defaultFolder = new File("C:/Users/Public/Pictures/Sample Pictures");
@@ -212,7 +221,6 @@ public class Wallpaper {
 	    }
 
 	    SystemTray systemTray = SystemTray.getSystemTray();
-	    Image image = Toolkit.getDefaultToolkit().getImage(logoOneurl);
 
 	    //popupmenu
 	    PopupMenu trayPopupMenu = new PopupMenu();
@@ -232,25 +240,66 @@ public class Wallpaper {
 	        	JComboBox comboOptions = new JComboBox( comboStrings );
 	        	comboOptions.setSelectedIndex( selectedOption );
 
-	        	JOptionPane.showConfirmDialog(null, comboOptions, "Enter switch rate (in minutes)", JOptionPane.OK_CANCEL_OPTION);
+	        	JOptionPane.showConfirmDialog(null, comboOptions, "Choose change rate", JOptionPane.OK_CANCEL_OPTION);
 	            selectedOption = comboOptions.getSelectedIndex();
 
 	        }
 	    });
 	    trayPopupMenu.add(action);
+	    
+	    final MenuItem folderList = new MenuItem("Included Folders");
+	    folderList.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	ArrayList<JCheckBox> list = new ArrayList<JCheckBox>();
+	        	for(int i = 0; i < folders.size(); i++) {
+	        		JCheckBox newbie = new JCheckBox(folders.get(i).toString());
+	        		list.add(newbie);
+	        	}
+	        	Object[] listOfFolders = list.toArray();
+	        	JCheckBox box = new JCheckBox( "option" );
+	        	JOptionPane.showConfirmDialog(null, listOfFolders, "Choose Included Folders", JOptionPane.OK_CANCEL_OPTION);
+	        	
+	        }
+	    });
+	    trayPopupMenu.add(folderList);
 
-	    MenuItem pause = new MenuItem("Pause");
+	    final MenuItem pause = new MenuItem("Pause");
 	    pause.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	            sleep = !sleep;
 	            if( sleep ) {
 	            	pause.setLabel("Resume");
+		    		try {
+						Thread.sleep(1000);
+						if( checkTime() && !sleep ) {
+							pictures();
+						}
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 	            } else {
 	            	pause.setLabel("Pause");
 	            }
 	        }
 	    });
 	    trayPopupMenu.add(pause);
+	    
+	    final MenuItem toggleIcon = new MenuItem("Hide Icon");
+	    toggleIcon.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		hide = !hide;
+	    		if(hide == true) {
+	    			toggleIcon.setLabel("Show Icon");
+	    			trayIcon.setImage(image2);
+	    		}
+	    		else {
+	    			toggleIcon.setLabel("Hide Icon");
+	    			trayIcon.setImage(image);
+	    		}
+	    	}
+	    });
+	    trayPopupMenu.add(toggleIcon);
 
 	    //2nd menuitem of popupmenu
 	    MenuItem close = new MenuItem("Close");
@@ -262,7 +311,7 @@ public class Wallpaper {
 	    trayPopupMenu.add(close);
 
 	    //setting tray icon
-	    TrayIcon trayIcon = new TrayIcon(image, "Changer", trayPopupMenu);
+	    trayIcon = new TrayIcon(image, "Changer", trayPopupMenu);
 	    //adjust to default size as per system recommendation
 	    trayIcon.setImageAutoSize(true);
 
@@ -270,6 +319,10 @@ public class Wallpaper {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
+                	for(int i = 0; i < folders.size(); i++){
+                		System.out.println(folders.get(i));
+                	}
+                	sleep = !sleep;
                 	pictures();
                 }
             }
