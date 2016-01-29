@@ -193,7 +193,7 @@ public class Wallpaper {
 
     		for( int i = 0; i < listOfFiles.length; i++ ) {
 //	    		if( listOfFiles[i].toString().contains(".jpg") || listOfFiles[i].toString().contains(".png") ) {
-	    		if( listOfFiles[i].toString().contains(".jpg") ) {
+	    		if( listOfFiles[i].toString().contains(".jpg") || listOfFiles[i].toString().contains(".jpeg") ) {
 	    			list.add( listOfFiles[i].toString() );
 	    		}
 	    	}
