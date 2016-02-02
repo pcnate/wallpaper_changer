@@ -67,6 +67,8 @@ public class Wallpaper {
     
     /** list of folders to scan for images */
     public static List<File> folders = new ArrayList<File>();
+    
+    private static ArrayList<JCheckBox> list = new ArrayList<JCheckBox>();
 
     /**
      * set the passed file as the desktop background
@@ -250,7 +252,7 @@ public class Wallpaper {
 	    final MenuItem folderList = new MenuItem("Included Folders");
 	    folderList.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	ArrayList<JCheckBox> list = new ArrayList<JCheckBox>();
+//	        	ArrayList<JCheckBox> list = new ArrayList<JCheckBox>();
 	        	for(int i = 0; i < folders.size(); i++) {
 	        		JCheckBox newbie = new JCheckBox(folders.get(i).toString());
 	        		list.add(newbie);
@@ -319,10 +321,10 @@ public class Wallpaper {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                	for(int i = 0; i < folders.size(); i++){
-                		System.out.println(folders.get(i));
-                	}
-                	sleep = !sleep;
+//                	for(int i = 0; i < folders.size(); i++){
+//                		System.out.println(folders.get(i));
+//                	}
+                	pause.setLabel("Pause");
                 	pictures();
                 }
             }
@@ -391,3 +393,12 @@ public class Wallpaper {
   	}
 
 }
+
+//Class directoryList {
+//	JCheckBox box;
+//	boolean active;
+//	
+//	directoryList(JCheckBox b, boolean a) {
+//		
+//	}
+//}
