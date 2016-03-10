@@ -68,7 +68,7 @@ public class Wallpaper {
     /** list of folders to scan for images */
     public static List<File> folders = new ArrayList<File>();
     
-    private static ArrayList<JCheckBox> list = new ArrayList<JCheckBox>();
+    private static ArrayList<IncludedDirectories> list = new ArrayList<IncludedDirectories>();
 
     /**
      * set the passed file as the desktop background
@@ -199,16 +199,30 @@ public class Wallpaper {
 	    			list.add( listOfFiles[i].toString() );
 	    		}
 	    	}
+//        	for(int i = 0; i < folders.size(); i++) {
+//        		setUsedDirectories(folders.get(i).toString(), true);
+//        	}
+//    		setUsedDirectories();
     		
     	}
 
     	Random randomizer = new Random();
     	String randomPic = list.get( randomizer.nextInt( list.size() ) );
-    	System.out.println( randomPic );
+    	System.out.println( list.size() );
     	setWallpaper( randomPic );
     }
 
-    /**
+    private static void setUsedDirectories(String s, boolean b) {
+    	System.out.println("setD");
+		IncludedDirectories newbie = new IncludedDirectories(new JCheckBox(s), b);
+		newbie.getBox().setSelected(b);
+		if(!list.contains(newbie)){
+			list.add(newbie);
+		}
+
+	}
+
+	/**
      * setup the GUI and start the main program loop
      * 
      * @param args	program arguments
@@ -252,16 +266,22 @@ public class Wallpaper {
 	    final MenuItem folderList = new MenuItem("Included Folders");
 	    folderList.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-//	        	ArrayList<JCheckBox> list = new ArrayList<JCheckBox>();
-	        	for(int i = 0; i < folders.size(); i++) {
-	        		JCheckBox newbie = new JCheckBox(folders.get(i).toString());
-	        		list.add(newbie);
-	        	}
-	        	Object[] listOfFolders = list.toArray();
-	        	JCheckBox box = new JCheckBox( "option" );
-	        	JOptionPane.showConfirmDialog(null, listOfFolders, "Choose Included Folders", JOptionPane.OK_CANCEL_OPTION);
+//	        	Object[] listOfFolders = list.toArray();
+//	        	JCheckBox box = new JCheckBox( "option" );
+//	        	getBoxes();
+	        	JOptionPane.showConfirmDialog(null, getBoxes(), "Choose Included Folders", JOptionPane.OK_CANCEL_OPTION, 0);
 	        	
 	        }
+
+			private Object[] getBoxes() {
+				Object[] boxes = new Object[list.size()];
+				for(int i = 0; i < boxes.length; ++i){
+
+					boxes[i] = list.get(i).getBox();
+				}
+				return boxes;
+				
+			}
 	    });
 	    trayPopupMenu.add(folderList);
 
@@ -393,12 +413,3 @@ public class Wallpaper {
   	}
 
 }
-
-//Class directoryList {
-//	JCheckBox box;
-//	boolean active;
-//	
-//	directoryList(JCheckBox b, boolean a) {
-//		
-//	}
-//}
