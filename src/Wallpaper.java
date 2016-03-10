@@ -63,12 +63,12 @@ public class Wallpaper {
 	private static boolean hide = false;
 	
 	/** default location to look for images */
-    private static File defaultFolder = new File("C:/Users/Public/Pictures/Sample Pictures");
+//    private static File defaultFolder = new File("");
     
     /** list of folders to scan for images */
     public static List<File> folders = new ArrayList<File>();
     
-    private static ArrayList<IncludedDirectories> list = new ArrayList<IncludedDirectories>();
+//    private static ArrayList<IncludedDirectories> list = new ArrayList<IncludedDirectories>();
 
     /**
      * set the passed file as the desktop background
@@ -120,7 +120,7 @@ public class Wallpaper {
     	resetFolders();
     	
     	// default location
-    	addFolder( defaultFolder );
+//    	addFolder( defaultFolder );
     	
     	File[] drives;
     	FileSystemView fsv = FileSystemView.getFileSystemView();
@@ -169,6 +169,7 @@ public class Wallpaper {
      */
     public static void addFolder( File folder ) {
     	folders.add( folder );
+    	System.out.println(folder);
     }
 
     /**
@@ -194,33 +195,21 @@ public class Wallpaper {
     		File[] listOfFiles = folder.listFiles();
 
     		for( int i = 0; i < listOfFiles.length; i++ ) {
-//	    		if( listOfFiles[i].toString().contains(".jpg") || listOfFiles[i].toString().contains(".png") ) {
+    			
 	    		if( listOfFiles[i].toString().contains(".jpg") || listOfFiles[i].toString().contains(".jpeg") ) {
 	    			list.add( listOfFiles[i].toString() );
 	    		}
 	    	}
-//        	for(int i = 0; i < folders.size(); i++) {
-//        		setUsedDirectories(folders.get(i).toString(), true);
-//        	}
-//    		setUsedDirectories();
     		
     	}
 
     	Random randomizer = new Random();
     	String randomPic = list.get( randomizer.nextInt( list.size() ) );
     	System.out.println( list.size() );
+
     	setWallpaper( randomPic );
     }
 
-    private static void setUsedDirectories(String s, boolean b) {
-    	System.out.println("setD");
-		IncludedDirectories newbie = new IncludedDirectories(new JCheckBox(s), b);
-		newbie.getBox().setSelected(b);
-		if(!list.contains(newbie)){
-			list.add(newbie);
-		}
-
-	}
 
 	/**
      * setup the GUI and start the main program loop
@@ -263,27 +252,7 @@ public class Wallpaper {
 	    });
 	    trayPopupMenu.add(action);
 	    
-	    final MenuItem folderList = new MenuItem("Included Folders");
-	    folderList.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-//	        	Object[] listOfFolders = list.toArray();
-//	        	JCheckBox box = new JCheckBox( "option" );
-//	        	getBoxes();
-	        	JOptionPane.showConfirmDialog(null, getBoxes(), "Choose Included Folders", JOptionPane.OK_CANCEL_OPTION, 0);
-	        	
-	        }
 
-			private Object[] getBoxes() {
-				Object[] boxes = new Object[list.size()];
-				for(int i = 0; i < boxes.length; ++i){
-
-					boxes[i] = list.get(i).getBox();
-				}
-				return boxes;
-				
-			}
-	    });
-	    trayPopupMenu.add(folderList);
 
 	    final MenuItem pause = new MenuItem("Pause");
 	    pause.addActionListener(new ActionListener() {
