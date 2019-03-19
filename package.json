@@ -1,0 +1,28 @@
+{
+  "name": "wallpaper_changer",
+  "version": "2.0.0",
+  "description": "nodejs wallpaper changer",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pcnate/wallpaper_changer.git"
+  },
+  "keywords": [
+    "nodejs",
+    "wallpaper"
+  ],
+  "author": "Nathan Baker <pcnate@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pcnate/wallpaper_changer/issues"
+  },
+  "homepage": "https://github.com/pcnate/wallpaper_changer#readme",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "wallpaper": "^4.3.0"
+  }
+}
