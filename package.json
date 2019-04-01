@@ -23,6 +23,6 @@
   "homepage": "https://github.com/pcnate/wallpaper_changer#readme",
   "dependencies": {
     "dotenv": "^7.0.0",
-    "wallpaper": "^4.3.0"
+    "wallpaper": "^4.4.0"
   }
 }
